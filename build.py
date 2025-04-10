@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #
-#    Helper module to build macOS version of various source ports
+#    Helper module to build macOS version of various radio frequency tools
 #    Copyright (C) 2020-2025 Alexey Lysiuk
 #
 #    This program is free software: you can redistribute it and/or modify
