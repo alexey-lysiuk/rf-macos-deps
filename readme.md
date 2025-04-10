@@ -1,10 +1,6 @@
-# *ZDoom binary dependencies for macOS
+# Radio frequency tools' binary dependencies for macOS
 
-This repository contains all binary dependencies required to build macOS application bundles of [ZDoom-derived](https://zdoom.org) source ports. A few other projects are supported as well, with lesser priority though.
-
-[![Build Targets](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/build.yml/badge.svg)](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/build.yml)
-[![Lint Code](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/lint.yml/badge.svg)](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/lint.yml)
-[![Test Libraries](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/test.yml/badge.svg)](https://github.com/ZDoom/zdoom-macos-deps/actions/workflows/test.yml)
+This repository contains binary dependencies required to build various radio frequency tools on macOS.
 
 ## Usage
 
