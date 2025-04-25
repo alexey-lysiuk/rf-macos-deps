@@ -25,4 +25,7 @@ def targets():
     return (
         # Libraries
         UsbTarget(),
+
+        # Tools
+        DfuUtilTarget(),
     )
