@@ -15,3 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+import aedi.target.base as base
+from aedi.state import BuildState
+
+
+class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
+    def __init__(self, name='usb'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/libusb/libusb/releases/download/v1.0.28/libusb-1.0.28.tar.bz2',
+            '966bb0d231f94a474eaae2e67da5ec844d3527a1f386456394ff432580634b29')
+
+    def detect(self, state: BuildState) -> bool:
+        return state.has_source_file('libusb/libusb.h')

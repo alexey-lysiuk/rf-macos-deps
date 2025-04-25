@@ -23,4 +23,6 @@ from .tool import *
 
 def targets():
     return (
+        # Libraries
+        UsbTarget(),
     )
