@@ -20,6 +20,56 @@ import aedi.target.base as base
 from aedi.state import BuildState
 
 
+class FftwTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='fftw'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://fftw.org/fftw-3.3.10.tar.gz',
+            '56c932549852cddcfafdab3820b0200c7742675be92179e59e6215b340e26467')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['BUILD_TESTS'] = 'NO'
+        opts['DISABLE_FORTRAN'] = 'YES'
+        opts['ENABLE_FLOAT'] = 'YES'
+        opts['ENABLE_THREADS'] = 'YES'
+
+        if state.architecture() == 'x86_64':
+            opts['ENABLE_SSE2'] = 'YES'
+            opts['ENABLE_AVX'] = 'YES'
+            opts['ENABLE_AVX2'] = 'YES'
+
+        super().configure(state)
+
+        # Patch config header to replace absolute path
+        def clean_build_config(line: str):
+            cfg_prefix = '#define FFTW_CC "'
+            return f'{cfg_prefix}clang"\n' if line.startswith(cfg_prefix) else line
+
+        self.update_text_file(state.build_path / 'config.h', clean_build_config)
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        # Patch CMake module to replace absolute paths
+        replacements = {
+            'set (FFTW3f_INCLUDE_DIRS ': '"${CMAKE_CURRENT_LIST_DIR}/../../../include")\n',
+            'set (FFTW3f_LIBRARY_DIRS ': '"${CMAKE_CURRENT_LIST_DIR}/../../")\n'
+        }
+
+        def update_dirs(line: str):
+            for prefix in replacements:
+                if line.startswith(prefix):
+                    return prefix + replacements[prefix]
+
+            return line
+
+        cmake_module = state.install_path / 'lib/cmake/fftw3f/FFTW3fConfig.cmake'
+        self.update_text_file(cmake_module, update_dirs)
+
+
 class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
     def __init__(self, name='usb'):
         super().__init__(name)

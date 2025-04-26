@@ -24,6 +24,7 @@ from .tool import *
 def targets():
     return (
         # Libraries
+        FftwTarget(),
         UsbTarget(),
 
         # Tools
