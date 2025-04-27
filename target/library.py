@@ -70,6 +70,23 @@ class FftwTarget(base.CMakeSharedDependencyTarget):
         self.update_text_file(cmake_module, update_dirs)
 
 
+class FobosTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='fobos'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/rigexpert/libfobos/archive/refs/tags/v.2.3.2.tar.gz',
+            '4ad2f1268fd4f61796673fff0c6abe3e718dc80f8e3c14e649f6b15c9a8bd0f1',
+            patches=('fobos-fix-cmake', 'fobos-fix-determinism', 'fobos-fix-open'))
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        for binary in ('fobos_devinfo', 'fobos_fwloader', 'fobos_recorder'):
+            self.copy_to_bin(state, binary)
+
+
 class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
     def __init__(self, name='usb'):
         super().__init__(name)

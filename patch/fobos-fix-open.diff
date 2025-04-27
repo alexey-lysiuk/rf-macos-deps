@@ -1,0 +1,35 @@
+From 276b8fdaf16d197aa32730c83ea879564a319cf0 Mon Sep 17 00:00:00 2001
+From: "alexey.lysiuk" <alexey.lysiuk@gmail.com>
+Date: Fri, 4 Apr 2025 15:28:24 +0300
+Subject: [PATCH] Fix dangling device references after successful device
+ opening
+
+These erroneous references to devices prevented further usage of libusb on macOS
+A bunch of the following errors were reported during call to libusb_exit()
+> libusb: error [darwin_cleanup_devices] device still referenced at libusb_exit
+The next call to libusb_init() failed with the following error
+> libusb: error [darwin_first_time_init] libusb_device reference not released on last exit. will not continue
+
+To reproduce the issue, it's enough to add the second call to get_devinfo() function to fobos_devinfo_main.c
+Without this change, the second enumeration could not find any devices with FobosSDR connected
+
+Fix #19
+---
+ fobos/fobos.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fobos/fobos.c b/fobos/fobos.c
+index bf1a8d4..17e1fc4 100644
+--- a/fobos/fobos.c
++++ b/fobos/fobos.c
+@@ -909,6 +909,7 @@ int fobos_rx_open(struct fobos_dev_t ** out_dev, uint32_t index)
+                     fobos_rffc507x_init(dev);
+                     fobos_rx_set_frequency(dev, 100E6, 0);
+                     fobos_rx_set_samplerate(dev, 25000000.0, 0);
++                    libusb_free_device_list(dev_list, 1);
+                     return FOBOS_ERR_OK;
+                 }
+             }
+-- 
+2.39.5 (Apple Git-154)
+

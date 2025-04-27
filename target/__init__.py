@@ -25,6 +25,7 @@ def targets():
     return (
         # Libraries
         FftwTarget(),
+        FobosTarget(),
         UsbTarget(),
 
         # Tools
