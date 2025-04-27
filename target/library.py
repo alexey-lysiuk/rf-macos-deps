@@ -87,6 +87,37 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
             self.copy_to_bin(state, binary)
 
 
+class RtlSdrTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='rtlsdr'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/steve-m/librtlsdr/archive/refs/tags/v2.0.2.tar.gz',
+            'f407de0b6dce19e81694814e363e8890b6ab2c287c8d64c27a03023e5702fb42')
+        
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        # Patch CMake module to replace absolute paths
+        replacements = {
+            '  INTERFACE_INCLUDE_DIRECTORIES ':
+                '"${_IMPORT_PREFIX}/include;${CMAKE_CURRENT_LIST_DIR}/../../../include/libusb-1.0"\n',
+            '  INTERFACE_LINK_LIBRARIES ':
+                '"${CMAKE_CURRENT_LIST_DIR}/../../libusb-1.0.dylib"\n',
+        }
+
+        def update_dirs(line: str):
+            for prefix in replacements:
+                if line.startswith(prefix):
+                    return prefix + replacements[prefix]
+
+            return line
+
+        cmake_module = state.install_path / 'lib/cmake/rtlsdr/rtlsdrTargets.cmake'
+        self.update_text_file(cmake_module, update_dirs)
+
+
 class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
     def __init__(self, name='usb'):
         super().__init__(name)

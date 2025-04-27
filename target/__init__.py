@@ -26,6 +26,7 @@ def targets():
         # Libraries
         FftwTarget(),
         FobosTarget(),
+        RtlSdrTarget(),
         UsbTarget(),
 
         # Tools
