@@ -29,4 +29,5 @@ def targets():
 
         # Tools
         DfuUtilTarget(),
+        HackRFTarget(),
     )
