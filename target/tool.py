@@ -31,21 +31,3 @@ class DfuUtilTarget(base.ConfigureMakeDependencyTarget):
 
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('src/dfu_util.h')
-
-
-class HackRFTarget(base.CMakeSharedDependencyTarget):
-    _VERSION = '2024.02.1'
-
-    def __init__(self, name='hackrf'):
-        super().__init__(name)
-        self.src_root = 'host'
-
-    def prepare_source(self, state: BuildState):
-        state.download_source(
-            'https://github.com/greatscottgadgets/hackrf/releases/download/'
-            f'v{HackRFTarget._VERSION}/hackrf-{HackRFTarget._VERSION}.tar.xz',
-            'd9ced67e6b801cd02c18d0c4654ed18a4bcb36c24a64330c347dfccbd859ad16')
-
-    def configure(self, state: BuildState):
-        state.options['RELEASE'] = HackRFTarget._VERSION
-        super().configure(state)

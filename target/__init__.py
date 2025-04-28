@@ -26,10 +26,10 @@ def targets():
         # Libraries
         FftwTarget(),
         FobosTarget(),
+        HackRFTarget(),
         RtlSdrTarget(),
         UsbTarget(),
 
         # Tools
         DfuUtilTarget(),
-        HackRFTarget(),
     )
