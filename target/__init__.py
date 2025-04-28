@@ -24,6 +24,7 @@ from .tool import *
 def targets():
     return (
         # Libraries
+        Ad9361Target(),
         FftwTarget(),
         FobosTarget(),
         HackRFTarget(),

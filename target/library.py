@@ -20,6 +20,23 @@ import aedi.target.base as base
 from aedi.state import BuildState
 
 
+class Ad9361Target(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='ad9361'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            # libad9361-iio v0.3 with addition of CMake option to disable macOS framework
+            # https://github.com/analogdevicesinc/libad9361-iio/commit/ef3d58506132072834637f887bc47eb4d0c52a73
+            # https://github.com/analogdevicesinc/libad9361-iio/commit/05fbfed2b2104645a6ebe262631bb35a09c73a37
+            'https://github.com/analogdevicesinc/libad9361-iio/archive/05fbfed2b2104645a6ebe262631bb35a09c73a37.tar.gz',
+            '10f7124ee77e5d1987733dce86c7d572917c16c69023d78a932298f8e8b22552')
+
+    def configure(self, state: BuildState):
+        state.options['OSX_FRAMEWORK'] = 'NO'
+        super().configure(state)
+
+
 class FftwTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='fftw'):
         super().__init__(name)
