@@ -105,6 +105,20 @@ class HackRFTarget(base.CMakeSharedDependencyTarget):
         super().configure(state)
 
 
+class IioTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='iio'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/analogdevicesinc/libiio/archive/refs/tags/v0.26.tar.gz',
+            'fb445fb860ef1248759f45d4273a4eff360534480ec87af64c6b8db3b99be7e5')
+
+    def configure(self, state: BuildState):
+        state.options['OSX_FRAMEWORK'] = 'NO'
+        super().configure(state)
+
+
 class RtlSdrTarget(base.CMakeDependencyTarget):
     def __init__(self, name='rtlsdr'):
         super().__init__(name)

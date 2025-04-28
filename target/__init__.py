@@ -27,6 +27,7 @@ def targets():
         FftwTarget(),
         FobosTarget(),
         HackRFTarget(),
+        IioTarget(),
         RtlSdrTarget(),
         UsbTarget(),
 
