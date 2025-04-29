@@ -16,6 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import shutil
+
 import aedi.target.base as base
 from aedi.state import BuildState
 
@@ -152,6 +154,23 @@ class IioTarget(base.CMakeSharedDependencyTarget):
     def configure(self, state: BuildState):
         state.options['OSX_FRAMEWORK'] = 'NO'
         super().configure(state)
+
+
+class MakoTarget(base.BuildTarget):
+    def __init__(self, name='mako'):
+        super().__init__(name)
+        self.multi_platform = False
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/sqlalchemy/mako/archive/refs/tags/rel_1_3_10.tar.gz',
+            'e8f1334904611d5cb357b6396790fd4375ac21ad901f4314d222d5d5758979b9')
+
+    def detect(self, state: BuildState) -> bool:
+        return state.has_source_file('mako/ast.py')
+
+    def post_build(self, state: BuildState):
+        shutil.copytree(state.source / self.name, state.install_path / 'lib/python' / self.name)
 
 
 class RtlSdrTarget(base.CMakeDependencyTarget):
