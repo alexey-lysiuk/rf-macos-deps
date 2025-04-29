@@ -33,8 +33,7 @@ class DfuUtilTarget(base.ConfigureMakeDependencyTarget):
         return state.has_source_file('src/dfu_util.h')
 
 
-# class OrcTarget(base.MesonTarget):
-class OrcTarget(base.MesonStaticTarget):
+class OrcTarget(base.MesonSharedTarget):
     def __init__(self, name='orc'):
         super().__init__(name)
 
