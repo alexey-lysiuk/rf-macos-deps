@@ -255,6 +255,19 @@ class VolkTarget(base.CMakeSharedDependencyTarget):
 
         super().configure(state)
 
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        # Patch CMake module to replace absolute path
+        soname_prefix = '  IMPORTED_SONAME_RELEASE '
+        soname_path = soname_prefix + '"${CMAKE_CURRENT_LIST_DIR}/../../libvolk.3.2.dylib"\n'
+
+        def update_path(line: str):
+            return soname_path if line.startswith(soname_prefix) else line
+
+        cmake_module = state.install_path / 'lib/cmake/volk/VolkTargets-release.cmake'
+        self.update_text_file(cmake_module, update_path)
+
 
 class ZstdTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='zstd'):
