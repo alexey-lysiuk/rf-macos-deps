@@ -246,7 +246,8 @@ class VolkTarget(base.CMakeSharedDependencyTarget):
     def prepare_source(self, state: BuildState):
         state.download_source(
             'https://github.com/gnuradio/volk/releases/download/v3.2.0/volk-3.2.0.tar.gz',
-            '9c6c11ec8e08aa37ce8ef7c5bcbdee60bac2428faeffb07d072e572ed05eb8cd')
+            '9c6c11ec8e08aa37ce8ef7c5bcbdee60bac2428faeffb07d072e572ed05eb8cd',
+            patches='volk-no-abspaths')
 
     def configure(self, state: BuildState):
         opts = state.options
