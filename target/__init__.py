@@ -34,6 +34,7 @@ def targets():
         MarkupSafeTarget(),
         RtlSdrTarget(),
         UsbTarget(),
+        VolkTarget(),
         ZstdTarget(),
 
         # Tools

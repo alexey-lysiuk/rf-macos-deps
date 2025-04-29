@@ -239,6 +239,23 @@ class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
         return state.has_source_file('libusb/libusb.h')
 
 
+class VolkTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='volk'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/gnuradio/volk/releases/download/v3.2.0/volk-3.2.0.tar.gz',
+            '9c6c11ec8e08aa37ce8ef7c5bcbdee60bac2428faeffb07d072e572ed05eb8cd')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['ENABLE_MODTOOL'] = 'NO'
+        opts['ENABLE_TESTING'] = 'NO'
+
+        super().configure(state)
+
+
 class ZstdTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='zstd'):
         super().__init__(name)
