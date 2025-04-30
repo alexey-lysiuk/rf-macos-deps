@@ -31,3 +31,25 @@ class DfuUtilTarget(base.ConfigureMakeDependencyTarget):
 
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('src/dfu_util.h')
+
+
+class OrcTarget(base.MesonSharedTarget):
+    def __init__(self, name='orc'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://gstreamer.freedesktop.org/src/orc/orc-0.4.41.tar.xz',
+            'cb1bfd4f655289cd39bc04642d597be9de5427623f0861c1fc19c08d98467fa2')
+
+    def detect(self, state: BuildState) -> bool:
+        return state.has_source_file('orc/orc.h')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['benchmarks'] = 'disabled'
+        opts['examples'] = 'disabled'
+        opts['orc-test'] = 'disabled'
+        opts['tests'] = 'disabled'
+        
+        super().configure(state)

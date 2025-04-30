@@ -34,4 +34,5 @@ def targets():
 
         # Tools
         DfuUtilTarget(),
+        OrcTarget(),
     )
