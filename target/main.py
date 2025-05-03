@@ -16,6 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
+
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
 
@@ -40,4 +42,12 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         for option in disabled_options:
             opts['OPT_BUILD_' + option] = 'NO'
 
+        opts['USE_BUNDLE_DEFAULTS'] = 'YES'
+
         super().configure(state)
+
+    def post_build(self, state: BuildState):
+        if state.xcode:
+            os.symlink(state.source / 'root/res', state.build_path / 'Resources')
+
+        super().post_build(state)
