@@ -20,6 +20,7 @@ import os
 
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
+from aedi.utility import hardlink_directories
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
@@ -42,15 +43,14 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         for option in disabled_options:
             opts['OPT_BUILD_' + option] = 'NO'
 
+        opts['USE_BUNDLE_DEFAULTS'] = 'YES'
         opts['USE_INTERNAL_LIBCORRECT'] = 'NO'
-
-        if not state.xcode:
-            opts['USE_BUNDLE_DEFAULTS'] = 'YES'
 
         super().configure(state)
 
     def post_build(self, state: BuildState):
-        # if state.xcode:
-        #     os.symlink(state.source / 'root/res', state.build_path / 'Resources')
+        if state.xcode:
+            os.symlink(state.source / 'root/res', state.build_path / 'Resources')
+            hardlink_directories((state.lib_path,), state.build_path / 'Debug', cleanup=False)
 
         super().post_build(state)
