@@ -16,11 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
-from aedi.utility import hardlink_directories
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
@@ -54,11 +51,13 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             config = 'Debug'
 
             # Shared library dependencies
-            hardlink_directories((state.lib_path,), state.build_path / config, cleanup=False)
+            for dylib in state.lib_path.glob('*.dylib'):
+                if not dylib.exists():
+                    dylib.link_to(state.build_path / config / dylib.name)
 
             # SDR++ modules
             plugins_path = state.build_path / 'Plugins'
-            os.makedirs(plugins_path, exist_ok=True)
+            plugins_path.mkdir(parents=True, exist_ok=True)
 
             for modules_path in state.build_path.glob('*_modules'):
                 for module_path in modules_path.iterdir():
@@ -69,12 +68,12 @@ class SdrPlusPlusTarget(CMakeMainTarget):
                         # Check for symlink existence regardless of target file presence
                         # pathlib.Path.exists() returns True only when symlink points to existing file
                         if not module_dest.is_symlink():
-                            os.symlink(module_path / config / module_dylib, module_dest)
+                            module_dest.symlink_to(module_path / config / module_dylib)
 
             # SDR++ resources
             resources_path = state.build_path / 'Resources'
 
             if not resources_path.exists():
-                os.symlink(state.source / 'root/res', resources_path)
+                resources_path.symlink_to(state.source / 'root/res')
 
         super().post_build(state)
