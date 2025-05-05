@@ -43,6 +43,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         for option in disabled_options:
             opts['OPT_BUILD_' + option] = 'NO'
 
+        opts['OPT_BUILD_FOBOSSDR_SOURCE'] = 'YES'
         opts['USE_BUNDLE_DEFAULTS'] = 'YES'
         opts['USE_INTERNAL_LIBCORRECT'] = 'NO'
 
@@ -63,10 +64,12 @@ class SdrPlusPlusTarget(CMakeMainTarget):
                 for module_path in modules_path.iterdir():
                     if module_path.is_dir():
                         module_dylib = f'{module_path.name}.dylib'
-                        module_symlink = plugins_path / module_dylib
+                        module_dest = plugins_path / module_dylib
 
-                        if not module_symlink.exists():
-                            os.symlink(module_path / config / module_dylib, module_symlink)
+                        # Check for symlink existence regardless of target file presence
+                        # pathlib.Path.exists() returns True only when symlink points to existing file
+                        if not module_dest.is_symlink():
+                            os.symlink(module_path / config / module_dylib, module_dest)
 
             # SDR++ resources
             resources_path = state.build_path / 'Resources'
