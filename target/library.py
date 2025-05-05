@@ -51,6 +51,9 @@ class CorrectTarget(base.CMakeDependencyTarget):
 
     def post_build(self, state: BuildState):
         super().post_build(state)
+
+        os.unlink(state.install_path / 'lib/libcorrect.dylib')
+
         self.write_pc_file(state, filename='libcorrect.pc',
             description='C library for Convolutional codes and Reed-Solomon', version='0.0.0', libs='-lcorrect')
 
