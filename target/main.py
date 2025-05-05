@@ -50,7 +50,28 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def post_build(self, state: BuildState):
         if state.xcode:
-            os.symlink(state.source / 'root/res', state.build_path / 'Resources')
-            hardlink_directories((state.lib_path,), state.build_path / 'Debug', cleanup=False)
+            config = 'Debug'
+
+            # Shared library dependencies
+            hardlink_directories((state.lib_path,), state.build_path / config, cleanup=False)
+
+            # SDR++ modules
+            plugins_path = state.build_path / 'Plugins'
+            os.makedirs(plugins_path, exist_ok=True)
+
+            for modules_path in state.build_path.glob('*_modules'):
+                for module_path in modules_path.iterdir():
+                    if module_path.is_dir():
+                        module_dylib = f'{module_path.name}.dylib'
+                        module_symlink = plugins_path / module_dylib
+
+                        if not module_symlink.exists():
+                            os.symlink(module_path / config / module_dylib, module_symlink)
+
+            # SDR++ resources
+            resources_path = state.build_path / 'Resources'
+
+            if not resources_path.exists():
+                os.symlink(state.source / 'root/res', resources_path)
 
         super().post_build(state)
