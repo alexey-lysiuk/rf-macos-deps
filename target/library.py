@@ -113,9 +113,10 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
         super().__init__(name)
 
     def prepare_source(self, state: BuildState):
+        # Unlike the corresponding tag, the following commit is the proper version 2.3.2
         state.download_source(
-            'https://github.com/rigexpert/libfobos/archive/refs/tags/v.2.3.2.tar.gz',
-            '4ad2f1268fd4f61796673fff0c6abe3e718dc80f8e3c14e649f6b15c9a8bd0f1',
+            'https://github.com/rigexpert/libfobos/archive/f202101d5cfd40c1fe177513e256d49950c7dd9a.tar.gz',
+            'f5d81fcc12460cbe86fbc0e7a3691b5eb6455141f4d4b588659c6ab69b3cfb6c',
             patches=('fobos-fix-cmake', 'fobos-fix-determinism', 'fobos-fix-open'))
 
     def post_build(self, state: BuildState):
