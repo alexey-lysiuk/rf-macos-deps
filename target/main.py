@@ -29,16 +29,19 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def configure(self, state: BuildState):
         opts = state.options
-        disabled_options = (
-            'AIRSPY_SOURCE',
-            'AIRSPYHF_SOURCE',
-            'DISCORD_PRESENCE',
-        )
+        build_options = {
+            'AIRSPY_SOURCE': 'NO',
+            'AIRSPYHF_SOURCE': 'NO',
+            'AUDIO_SINK': 'NO',
+            'DISCORD_PRESENCE': 'NO',
+            'FOBOSSDR_SOURCE': 'YES',
+            'NEW_PORTAUDIO_SINK': 'YES',
+            'PORTAUDIO_SINK': 'YES',
+        }
 
-        for option in disabled_options:
-            opts['OPT_BUILD_' + option] = 'NO'
+        for name, value in build_options.items():
+            opts['OPT_BUILD_' + name] = value
 
-        opts['OPT_BUILD_FOBOSSDR_SOURCE'] = 'YES'
         opts['USE_BUNDLE_DEFAULTS'] = 'YES'
         opts['USE_INTERNAL_LIBCORRECT'] = 'NO'
 
