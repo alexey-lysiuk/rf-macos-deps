@@ -35,6 +35,7 @@ def targets():
         IioTarget(),
         MakoTarget(),
         MarkupSafeTarget(),
+        RtAudioTarget(),
         RtlSdrTarget(),
         UsbTarget(),
         VolkTarget(),
