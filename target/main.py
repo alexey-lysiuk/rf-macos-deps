@@ -50,8 +50,10 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
             # Shared library dependencies
             for dylib in state.lib_path.glob('*.dylib'):
-                if not dylib.exists():
-                    dylib.link_to(state.build_path / config / dylib.name)
+                target_dylib = state.build_path / config / dylib.name
+
+                if not target_dylib.exists():
+                    dylib.link_to(target_dylib)
 
             # SDR++ modules
             plugins_path = state.build_path / 'Plugins'
