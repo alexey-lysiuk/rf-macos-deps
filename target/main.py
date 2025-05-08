@@ -32,8 +32,6 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         disabled_options = (
             'AIRSPY_SOURCE',
             'AIRSPYHF_SOURCE',
-            'AUDIO_SOURCE',
-            'AUDIO_SINK',
             'DISCORD_PRESENCE',
         )
 
