@@ -123,7 +123,7 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
         super().post_build(state)
 
         if state.xcode:
-            self.link_xcode_deps(state, 'usb')
+            self.hardlink_xcode_deps(state, 'usb')
         else:
             for suffix in ('devinfo', 'fwloader', 'recorder'):
                 self.copy_to_bin(state, 'fobos_' + suffix)
@@ -145,7 +145,7 @@ class FobosAgileTarget(base.CMakeSharedDependencyTarget):
         super().post_build(state)
 
         if state.xcode:
-            self.link_xcode_deps(state, 'usb')
+            self.hardlink_xcode_deps(state, 'usb')
         else:
             for suffix in ('devinfo', 'fwloader', 'recorder', 'scanner'):
                 self.copy_to_bin(state, 'fobos_sdr_' + suffix)
