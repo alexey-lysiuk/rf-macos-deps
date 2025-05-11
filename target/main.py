@@ -35,6 +35,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'AUDIO_SINK': 'NO',
             'DISCORD_PRESENCE': 'NO',
             'FOBOSSDR_SOURCE': 'YES',
+            'FOBOSSDR_AGILE_SOURCE': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
             'PORTAUDIO_SINK': 'YES',
         }
@@ -50,8 +51,8 @@ class SdrPlusPlusTarget(CMakeMainTarget):
     def post_build(self, state: BuildState):
         if state.xcode:
             # Shared library dependencies
-            self.hardlink_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'glfw', 'hackrf', 'iio',
-                'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
+            self.hardlink_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'fobos_sdr', 'glfw',
+                 'hackrf', 'iio', 'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
 
             # SDR++ modules
             plugins_path = state.build_path / 'Plugins'
