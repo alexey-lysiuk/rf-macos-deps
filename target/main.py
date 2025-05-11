@@ -49,14 +49,9 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def post_build(self, state: BuildState):
         if state.xcode:
-            config = 'Debug'
-
             # Shared library dependencies
-            for dylib in state.lib_path.glob('*.dylib'):
-                target_dylib = state.build_path / config / dylib.name
-
-                if not target_dylib.exists():
-                    dylib.link_to(target_dylib)
+            self.hardlink_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'glfw', 'hackrf', 'iio',
+                'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
 
             # SDR++ modules
             plugins_path = state.build_path / 'Plugins'
@@ -71,7 +66,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
                         # Check for symlink existence regardless of target file presence
                         # pathlib.Path.exists() returns True only when symlink points to existing file
                         if not module_dest.is_symlink():
-                            module_dest.symlink_to(module_path / config / module_dylib)
+                            module_dest.symlink_to(module_path / 'Debug' / module_dylib)
 
             # SDR++ resources
             resources_path = state.build_path / 'Resources'
