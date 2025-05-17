@@ -18,6 +18,7 @@
 
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
+from aedi.utility import apply_unified_diff
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
@@ -28,6 +29,8 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
 
     def configure(self, state: BuildState):
+        apply_unified_diff(state.patch_path / 'sdrpp-no-frameworks.diff', state.source)
+
         opts = state.options
         build_options = {
             'AIRSPY_SOURCE': 'NO',
