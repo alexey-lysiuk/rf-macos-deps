@@ -27,6 +27,21 @@ from aedi.utility import OS_VERSION_X86_64, apply_unified_diff, hardcopy, hardco
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
+    DEPENDENCIES = (
+        'ad9361.0',
+        'fftw3f.3.6.9',
+        'fobos',
+        'glfw.3',
+        'hackrf.0',
+        'iio.0',
+        'portaudio',
+        'rtaudio.7',
+        'rtlsdr.0',
+        'usb-1.0.0',
+        'volk.3.2',
+        'zstd.1'
+    )
+
     class BundleWriter:
         def __init__(self, state: BuildState):
             assert not state.xcode
@@ -64,9 +79,9 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             os.mkdir(self.lib_path)
             hardcopy(self.build_path / 'core' / core_lib, self.lib_path / core_lib)
 
-            # TODO: only needed libs
-            for dep in self.lib_path.glob('*.dylib'):
-                hardcopy(dep, self.lib_path / dep.name)
+            for dependency in SdrPlusPlusTarget.DEPENDENCIES:
+                dylib = f'lib{dependency}.dylib'
+                hardcopy(self.state.lib_path / dylib, self.lib_path / dylib)
 
             plugins_path = self.contents_path / 'Plugins'
             os.mkdir(plugins_path)
@@ -115,12 +130,6 @@ class SdrPlusPlusTarget(CMakeMainTarget):
                 )
                 subprocess.run(args, check=True, env=self.state.environment, stdout=subprocess.DEVNULL)
 
-            # for resolution in resolutions[1:]:
-            #     half_res = resolution // 2
-            #     src_path = iconset_path / f'icon_{resolution}x{resolution}.png'
-            #     dst_path = iconset_path / f'icon_{half_res}x{half_res}@2x.png'
-            #     hardcopy(src_path, dst_path)
-
             args = (
                 '/usr/bin/iconutil',
                 '-c', 'icns',
@@ -168,8 +177,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         assert state.xcode
 
         # Shared library dependencies
-        CMakeMainTarget.hardcopy_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'glfw',
-            'hackrf', 'iio', 'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
+        CMakeMainTarget.hardcopy_xcode_deps(state, SdrPlusPlusTarget.DEPENDENCIES)
 
         # SDR++ modules
         plugins_path = state.build_path / 'Plugins'
