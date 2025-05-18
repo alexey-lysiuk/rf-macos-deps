@@ -77,10 +77,26 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
         macos_path = contents_path / 'MacOS'
         os.mkdir(macos_path)
-        hardcopy(state.build_path / 'sdrpp', macos_path / 'sdrpp')
+
+        executable = 'sdrpp'
+        hardcopy(state.build_path / executable, macos_path / executable)
+
+        lib_path = contents_path / 'lib'
+        os.mkdir(lib_path)
+
+        core_lib = 'libsdrpp_core.dylib'
+        hardcopy(state.build_path / 'core' / core_lib, lib_path / core_lib)
+
+        # TODO: only needed libs
+        for dep in state.lib_path.glob('*.dylib'):
+            hardcopy(dep, lib_path / dep.name)
 
         plugins_path = contents_path / 'Plugins'
         os.mkdir(plugins_path)
+
+        for module in state.build_path.glob('**/*.dylib'):
+            if module.name != core_lib:
+                hardcopy(module, plugins_path / module.name)
 
         hardcopy_directory(state.source / 'root/res', contents_path / 'Resources')
 
