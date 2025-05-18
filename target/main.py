@@ -16,14 +16,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
+import shutil
+
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
-from aedi.utility import apply_unified_diff
+from aedi.utility import apply_unified_diff, hardcopy, hardcopy_directory
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
+    BUNDLE_NAME = 'SDR++.app'
+
     def __init__(self, name='sdrpp'):
         super().__init__(name)
+        self.outputs = (SdrPlusPlusTarget.BUNDLE_NAME,)
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
@@ -52,11 +58,33 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def post_build(self, state: BuildState):
         if state.xcode:
-            self._post_build_xcode(state)
+            self._prepare_xcode(state)
+        else:
+            self._create_bundle(state)
 
-        super().post_build(state)
+        # super().post_build(state)
 
-    def _post_build_xcode(self, state: BuildState):
+    def _create_bundle(self, state: BuildState):
+        assert not state.xcode
+
+        bundle_path = state.install_path / self.BUNDLE_NAME
+
+        if bundle_path.exists():
+            shutil.rmtree(bundle_path)
+
+        contents_path = bundle_path / 'Contents'
+        os.makedirs(bundle_path / contents_path)
+
+        macos_path = contents_path / 'MacOS'
+        os.mkdir(macos_path)
+        hardcopy(state.build_path / 'sdrpp', macos_path / 'sdrpp')
+
+        plugins_path = contents_path / 'Plugins'
+        os.mkdir(plugins_path)
+
+        hardcopy_directory(state.source / 'root/res', contents_path / 'Resources')
+
+    def _prepare_xcode(self, state: BuildState):
         assert state.xcode
 
         # Shared library dependencies
