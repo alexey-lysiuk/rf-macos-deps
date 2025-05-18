@@ -17,19 +17,17 @@
 #
 
 import os
+import plistlib
 import shutil
 
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
-from aedi.utility import apply_unified_diff, hardcopy, hardcopy_directory
+from aedi.utility import OS_VERSION_X86_64, apply_unified_diff, hardcopy, hardcopy_directory
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
-    BUNDLE_NAME = 'SDR++.app'
-
     def __init__(self, name='sdrpp'):
         super().__init__(name)
-        self.outputs = (SdrPlusPlusTarget.BUNDLE_NAME,)
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
@@ -62,18 +60,35 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         else:
             self._create_bundle(state)
 
-        # super().post_build(state)
-
-    def _create_bundle(self, state: BuildState):
+    @staticmethod
+    def _create_bundle(state: BuildState):
         assert not state.xcode
 
-        bundle_path = state.install_path / self.BUNDLE_NAME
+        bundle_path = state.install_path / 'SDR++.app'
 
         if bundle_path.exists():
             shutil.rmtree(bundle_path)
 
         contents_path = bundle_path / 'Contents'
         os.makedirs(bundle_path / contents_path)
+
+        version = '!TODO!'  # TODO
+        plist = {
+            'CFBundleExecutable': 'sdrpp',
+            'CFBundleIconFile': 'sdrpp.icns',
+            'CFBundleIdentifier': 'org.sdrpp.sdrpp',
+            'CFBundleInfoDictionaryVersion': '6.0',
+            'CFBundleName': 'SDR++',
+            'CFBundlePackageType': 'APPL',
+            'CFBundleShortVersionString': version,
+            'CFBundleVersion': version,
+            'LSMinimumSystemVersion': str(OS_VERSION_X86_64),
+            'NSHighResolutionCapable': True,
+            'NSSupportsAutomaticGraphicsSwitching': True,
+        }
+
+        with open(contents_path / 'Info.plist', 'wb') as f:
+            plistlib.dump(plist, f)
 
         macos_path = contents_path / 'MacOS'
         os.mkdir(macos_path)
@@ -98,13 +113,16 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             if module.name != core_lib:
                 hardcopy(module, plugins_path / module.name)
 
+        # TODO: icon
+
         hardcopy_directory(state.source / 'root/res', contents_path / 'Resources')
 
-    def _prepare_xcode(self, state: BuildState):
+    @staticmethod
+    def _prepare_xcode(state: BuildState):
         assert state.xcode
 
         # Shared library dependencies
-        self.hardcopy_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'glfw',
+        CMakeMainTarget.hardcopy_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'glfw',
             'hackrf', 'iio', 'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
 
         # SDR++ modules
