@@ -19,6 +19,7 @@
 import os
 import plistlib
 import shutil
+import subprocess
 
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
@@ -26,6 +27,108 @@ from aedi.utility import OS_VERSION_X86_64, apply_unified_diff, hardcopy, hardco
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
+    class BundleWriter:
+        def __init__(self, state: BuildState):
+            assert not state.xcode
+
+            self.state = state
+            self.executable = 'sdrpp'
+            self.icon = 'sdrpp.icns'
+
+            self.build_path = state.build_path
+            self.src_res_path = state.source / 'root/res'
+
+            self.bundle_path = state.install_path / 'SDR++.app'
+            self.contents_path = self.bundle_path / 'Contents'
+            self.plist_path = self.contents_path / 'Info.plist'
+            self.macos_path = self.contents_path / 'MacOS'
+            self.resources_path = self.contents_path / 'Resources'
+            self.lib_path = self.contents_path / 'lib'
+
+            self._write()
+
+        def _write(self):
+            if self.bundle_path.exists():
+                shutil.rmtree(self.bundle_path)
+
+            os.makedirs(self.macos_path)
+            hardcopy_directory(self.src_res_path, self.resources_path)
+            hardcopy(self.build_path / self.executable, self.macos_path / self.executable)
+
+            self._write_libs()
+            self._write_plist()
+            self._write_icon()
+
+        def _write_libs(self):
+            core_lib = 'libsdrpp_core.dylib'
+            os.mkdir(self.lib_path)
+            hardcopy(self.build_path / 'core' / core_lib, self.lib_path / core_lib)
+
+            # TODO: only needed libs
+            for dep in self.lib_path.glob('*.dylib'):
+                hardcopy(dep, self.lib_path / dep.name)
+
+            plugins_path = self.contents_path / 'Plugins'
+            os.mkdir(plugins_path)
+
+            for module in self.build_path.glob('**/*.dylib'):
+                if module.name != core_lib:
+                    hardcopy(module, plugins_path / module.name)
+
+        def _write_plist(self):
+            version = self.state.source_version().strip()
+            plist = {
+                'CFBundleExecutable': self.executable,
+                'CFBundleIconFile': self.icon,
+                'CFBundleIdentifier': 'org.sdrpp.sdrpp',
+                'CFBundleInfoDictionaryVersion': '6.0',
+                'CFBundleName': 'SDR++',
+                'CFBundlePackageType': 'APPL',
+                'CFBundleShortVersionString': version,
+                'CFBundleVersion': version,
+                'LSMinimumSystemVersion': str(OS_VERSION_X86_64),
+                'NSHighResolutionCapable': True,
+                'NSSupportsAutomaticGraphicsSwitching': True,
+            }
+
+            with open(self.plist_path, 'wb') as f:
+                plistlib.dump(plist, f)
+
+        def _write_icon(self):
+            iconset_path = self.build_path / 'sdrpp.iconset'
+
+            if iconset_path.exists():
+                shutil.rmtree(iconset_path)
+
+            os.mkdir(iconset_path)
+
+            icon_path = self.src_res_path / 'icons/sdrpp.macos.png'
+            resolutions = (16, 32, 64, 128, 256, 512)
+
+            for resolution in resolutions:
+                res_str = str(resolution)
+                args = (
+                    '/usr/bin/sips',
+                    '--resampleHeightWidth', res_str, res_str,
+                    icon_path,
+                    '--out', iconset_path / f'icon_{resolution}x{resolution}.png',
+                )
+                subprocess.run(args, check=True, env=self.state.environment, stdout=subprocess.DEVNULL)
+
+            # for resolution in resolutions[1:]:
+            #     half_res = resolution // 2
+            #     src_path = iconset_path / f'icon_{resolution}x{resolution}.png'
+            #     dst_path = iconset_path / f'icon_{half_res}x{half_res}@2x.png'
+            #     hardcopy(src_path, dst_path)
+
+            args = (
+                '/usr/bin/iconutil',
+                '-c', 'icns',
+                iconset_path,
+                '-o', self.resources_path / self.icon
+            )
+            subprocess.run(args, check=True, env=self.state.environment)
+
     def __init__(self, name='sdrpp'):
         super().__init__(name)
 
@@ -58,64 +161,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         if state.xcode:
             self._prepare_xcode(state)
         else:
-            self._create_bundle(state)
-
-    @staticmethod
-    def _create_bundle(state: BuildState):
-        assert not state.xcode
-
-        bundle_path = state.install_path / 'SDR++.app'
-
-        if bundle_path.exists():
-            shutil.rmtree(bundle_path)
-
-        contents_path = bundle_path / 'Contents'
-        os.makedirs(bundle_path / contents_path)
-
-        version = '!TODO!'  # TODO
-        plist = {
-            'CFBundleExecutable': 'sdrpp',
-            'CFBundleIconFile': 'sdrpp.icns',
-            'CFBundleIdentifier': 'org.sdrpp.sdrpp',
-            'CFBundleInfoDictionaryVersion': '6.0',
-            'CFBundleName': 'SDR++',
-            'CFBundlePackageType': 'APPL',
-            'CFBundleShortVersionString': version,
-            'CFBundleVersion': version,
-            'LSMinimumSystemVersion': str(OS_VERSION_X86_64),
-            'NSHighResolutionCapable': True,
-            'NSSupportsAutomaticGraphicsSwitching': True,
-        }
-
-        with open(contents_path / 'Info.plist', 'wb') as f:
-            plistlib.dump(plist, f)
-
-        macos_path = contents_path / 'MacOS'
-        os.mkdir(macos_path)
-
-        executable = 'sdrpp'
-        hardcopy(state.build_path / executable, macos_path / executable)
-
-        lib_path = contents_path / 'lib'
-        os.mkdir(lib_path)
-
-        core_lib = 'libsdrpp_core.dylib'
-        hardcopy(state.build_path / 'core' / core_lib, lib_path / core_lib)
-
-        # TODO: only needed libs
-        for dep in state.lib_path.glob('*.dylib'):
-            hardcopy(dep, lib_path / dep.name)
-
-        plugins_path = contents_path / 'Plugins'
-        os.mkdir(plugins_path)
-
-        for module in state.build_path.glob('**/*.dylib'):
-            if module.name != core_lib:
-                hardcopy(module, plugins_path / module.name)
-
-        # TODO: icon
-
-        hardcopy_directory(state.source / 'root/res', contents_path / 'Resources')
+            self.BundleWriter(state)
 
     @staticmethod
     def _prepare_xcode(state: BuildState):
