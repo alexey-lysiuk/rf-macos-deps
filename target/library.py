@@ -54,8 +54,12 @@ class CorrectTarget(base.CMakeDependencyTarget):
 
         os.unlink(state.install_path / 'lib/libcorrect.dylib')
 
-        self.write_pc_file(state, filename='libcorrect.pc',
-            description='C library for Convolutional codes and Reed-Solomon', version='0.0.0', libs='-lcorrect')
+        self.write_pc_file(
+            state,
+            filename='libcorrect.pc',
+            description='C library for Convolutional codes and Reed-Solomon',
+            version='0.0.0',
+            libs='-lcorrect')
 
 
 class FftwTarget(base.CMakeSharedDependencyTarget):
@@ -275,7 +279,7 @@ class RtlSdrTarget(base.CMakeDependencyTarget):
         state.download_source(
             'https://github.com/steve-m/librtlsdr/archive/refs/tags/v2.0.2.tar.gz',
             'f407de0b6dce19e81694814e363e8890b6ab2c287c8d64c27a03023e5702fb42')
-        
+
     def post_build(self, state: BuildState):
         super().post_build(state)
 

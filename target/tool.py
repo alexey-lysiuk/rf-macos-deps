@@ -51,5 +51,5 @@ class OrcTarget(base.MesonSharedTarget):
         opts['examples'] = 'disabled'
         opts['orc-test'] = 'disabled'
         opts['tests'] = 'disabled'
-        
+
         super().configure(state)

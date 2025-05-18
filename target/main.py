@@ -23,7 +23,12 @@ import subprocess
 
 from aedi.state import BuildState
 from aedi.target.base import CMakeMainTarget
-from aedi.utility import OS_VERSION_X86_64, apply_unified_diff, hardcopy, hardcopy_directory
+from aedi.utility import (
+    OS_VERSION_X86_64,
+    apply_unified_diff,
+    hardcopy,
+    hardcopy_directory,
+)
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
