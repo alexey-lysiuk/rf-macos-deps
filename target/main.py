@@ -53,29 +53,34 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def post_build(self, state: BuildState):
         if state.xcode:
-            # Shared library dependencies
-            self.hardcopy_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'fobos_sdr', 'glfw',
-                 'hackrf', 'iio', 'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
-
-            # SDR++ modules
-            plugins_path = state.build_path / 'Plugins'
-            plugins_path.mkdir(parents=True, exist_ok=True)
-
-            for modules_path in state.build_path.glob('*_modules'):
-                for module_path in modules_path.iterdir():
-                    if module_path.is_dir():
-                        module_dylib = f'{module_path.name}.dylib'
-                        module_dest = plugins_path / module_dylib
-
-                        # Check for symlink existence regardless of target file presence
-                        # pathlib.Path.exists() returns True only when symlink points to existing file
-                        if not module_dest.is_symlink():
-                            module_dest.symlink_to(module_path / 'Debug' / module_dylib)
-
-            # SDR++ resources
-            resources_path = state.build_path / 'Resources'
-
-            if not resources_path.exists():
-                resources_path.symlink_to(state.source / 'root/res')
+            self._post_build_xcode(state)
 
         super().post_build(state)
+
+    def _post_build_xcode(self, state: BuildState):
+        assert state.xcode
+
+        # Shared library dependencies
+        self.hardcopy_xcode_deps(state, 'ad9361', 'fftw3f', 'fobos', 'fobos_sdr', 'glfw',
+            'hackrf', 'iio', 'portaudio', 'rtaudio', 'rtlsdr', 'usb', 'volk', 'zstd')
+
+        # SDR++ modules
+        plugins_path = state.build_path / 'Plugins'
+        plugins_path.mkdir(parents=True, exist_ok=True)
+
+        for modules_path in state.build_path.glob('*_modules'):
+            for module_path in modules_path.iterdir():
+                if module_path.is_dir():
+                    module_dylib = f'{module_path.name}.dylib'
+                    module_dest = plugins_path / module_dylib
+
+                    # Check for symlink existence regardless of target file presence
+                    # pathlib.Path.exists() returns True only when symlink points to existing file
+                    if not module_dest.is_symlink():
+                        module_dest.symlink_to(module_path / 'Debug' / module_dylib)
+
+        # SDR++ resources
+        resources_path = state.build_path / 'Resources'
+
+        if not resources_path.exists():
+            resources_path.symlink_to(state.source / 'root/res')
