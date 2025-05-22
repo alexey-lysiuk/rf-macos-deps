@@ -27,6 +27,7 @@ def targets():
 
         # Libraries
         Ad9361Target(),
+        AirspyTarget(),
         CorrectTarget(),
         FftwTarget(),
         FobosTarget(),
