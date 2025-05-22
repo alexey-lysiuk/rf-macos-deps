@@ -34,6 +34,8 @@ from aedi.utility import (
 class SdrPlusPlusTarget(CMakeMainTarget):
     DEPENDENCIES = (
         'ad9361.0',
+        'airspy.0',
+        'airspyhf.0',
         'fftw3f.3.6.9',
         'fobos',
         'glfw.3',
@@ -154,10 +156,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
         opts = state.options
         build_options = {
-            'AIRSPY_SOURCE': 'NO',
-            'AIRSPYHF_SOURCE': 'NO',
             'AUDIO_SINK': 'NO',
-            'DISCORD_PRESENCE': 'NO',
             'FOBOSSDR_SOURCE': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
             'PORTAUDIO_SINK': 'YES',
