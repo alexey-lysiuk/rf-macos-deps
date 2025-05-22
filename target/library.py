@@ -95,7 +95,7 @@ class BladeRFTarget(base.CMakeSharedDependencyTarget):
         # Set search prefix to avoid absolute paths to intermediate directories
         opts['LIBBLADERF_SEARCH_PREFIX_OVERRIDE'] = '/usr/local'
 
-        # Do not fail compilation as it generates some warnings
+        # Do not fail build as compilation generates some warnings
         opts['TREAT_WARNINGS_AS_ERRORS'] = 'NO'
 
         # Mark as tagged/release build
