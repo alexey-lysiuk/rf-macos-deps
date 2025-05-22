@@ -84,6 +84,15 @@ class BladeRFTarget(base.CMakeSharedDependencyTarget):
         for args in checkout_args:
             subprocess.run(('git', *args), check=True, cwd=state.source, env=state.environment)
 
+        # Verify commit hash of checked out release tag
+        head_args = ('git', 'rev-parse', 'HEAD')
+        head_run = subprocess.run(head_args, check=True, cwd=state.source,
+                                  env=state.environment, stdout=subprocess.PIPE)
+        head_output = head_run.stdout.decode('ascii').strip()
+
+        if head_output != '41ef63460956e833c9b321252245257ab3946055':
+            raise RuntimeError('BladeRF commit does not match with the release tag')
+
     def configure(self, state: BuildState):
         opts = state.options
 
