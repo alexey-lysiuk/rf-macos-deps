@@ -36,6 +36,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         'ad9361.0',
         'airspy.0',
         'airspyhf.0',
+        'bladeRF.2',
         'fftw3f.3.6.9',
         'fobos',
         'glfw.3',
@@ -157,6 +158,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         opts = state.options
         build_options = {
             'AUDIO_SINK': 'NO',
+            'BLADERF_SOURCE': 'YES',
             'FOBOSSDR_SOURCE': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
             'PORTAUDIO_SINK': 'YES',
