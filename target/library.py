@@ -203,7 +203,7 @@ class RtlSdrTarget(base.CMakeDependencyTarget):
         state.download_source(
             'https://github.com/steve-m/librtlsdr/archive/refs/tags/v2.0.2.tar.gz',
             'f407de0b6dce19e81694814e363e8890b6ab2c287c8d64c27a03023e5702fb42')
-        
+
     def post_build(self, state: BuildState):
         super().post_build(state)
 
