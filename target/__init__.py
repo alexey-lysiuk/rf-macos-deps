@@ -31,6 +31,7 @@ def targets():
         HackRFTarget(),
         IioTarget(),
         MakoTarget(),
+        MarkupSafeTarget(),
         RtlSdrTarget(),
         UsbTarget(),
         ZstdTarget(),

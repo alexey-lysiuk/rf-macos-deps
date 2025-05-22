@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import shutil
 
 import aedi.target.base as base
@@ -171,6 +172,27 @@ class MakoTarget(base.BuildTarget):
 
     def post_build(self, state: BuildState):
         shutil.copytree(state.source / self.name, state.install_path / 'lib/python' / self.name)
+
+
+class MarkupSafeTarget(base.BuildTarget):
+    def __init__(self, name='markupsafe'):
+        super().__init__(name)
+        self.multi_platform = False
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/pallets/markupsafe/releases/download/3.0.2/markupsafe-3.0.2.tar.gz',
+            'ee55d3edf80167e48ea11a923c7386f4669df67d7994554387f84e7d8b0a2bf0')
+
+    def detect(self, state: BuildState) -> bool:
+        return state.has_source_file('markupsafe/_native.py')
+
+    def post_build(self, state: BuildState):
+        dest_path = state.install_path / 'lib/python' / self.name
+        os.makedirs(dest_path)
+
+        for filename in ('__init__.py', '_native.py'):
+            shutil.copy(state.source / 'src' / self.name / filename, dest_path)
 
 
 class RtlSdrTarget(base.CMakeDependencyTarget):
