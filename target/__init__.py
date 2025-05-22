@@ -31,6 +31,7 @@ def targets():
         IioTarget(),
         RtlSdrTarget(),
         UsbTarget(),
+        ZstdTarget(),
 
         # Tools
         DfuUtilTarget(),

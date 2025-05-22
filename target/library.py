@@ -178,3 +178,21 @@ class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
 
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('libusb/libusb.h')
+
+
+class ZstdTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='zstd'):
+        super().__init__(name)
+        self.src_root = 'build/cmake'
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz',
+            'eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['ZSTD_BUILD_PROGRAMS'] = 'NO'
+        opts['ZSTD_BUILD_STATIC'] = 'NO'
+
+        super().configure(state)
