@@ -27,6 +27,7 @@ def targets():
         Ad9361Target(),
         FftwTarget(),
         FobosTarget(),
+        GlfwTarget(),
         HackRFTarget(),
         IioTarget(),
         RtlSdrTarget(),
