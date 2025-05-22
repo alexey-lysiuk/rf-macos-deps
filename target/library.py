@@ -278,6 +278,27 @@ class IioTarget(base.CMakeSharedDependencyTarget):
         super().configure(state)
 
 
+class LimeSuiteTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='limesuite'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/myriadrf/LimeSuite/archive/refs/tags/v23.11.0.tar.gz',
+            'fd8a448b92bc5ee4012f0ba58785f3c7e0a4d342b24e26275318802dfe00eb33')
+
+    def configure(self, state: BuildState):
+        # Avoid non-deterministic build date
+        state.environment['SOURCE_DATE_EPOCH'] = '1705968000'  # 2024-01-23
+
+        opts = state.options
+        opts['ENABLE_EXAMPLES'] = 'NO'
+        opts['LIME_SUITE_EXTVER'] = 'gc2d9e877'  # 'g' + 8 characters of release tag commit hash
+        opts['LIME_SUITE_ROOT'] = '/usr/local'
+
+        super().configure(state)
+
+
 class MakoTarget(base.BuildTarget):
     def __init__(self, name='mako'):
         super().__init__(name)
