@@ -1,0 +1,11 @@
+prefix=
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: AirSpy HF+ Library
+Description: C Utility Library
+Version: 1.6
+Cflags: -I${includedir}/libairspyhf/ -I${includedir}/libusb-1.0
+Libs: -L${libdir} -lairspyhf
+Libs.private: 
