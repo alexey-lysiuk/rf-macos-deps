@@ -42,6 +42,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         'glfw.3',
         'hackrf.0',
         'iio.0',
+        'LimeSuite.23.11-1',
         'portaudio',
         'rtaudio.7',
         'rtlsdr.0',
@@ -160,6 +161,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'AUDIO_SINK': 'NO',
             'BLADERF_SOURCE': 'YES',
             'FOBOSSDR_SOURCE': 'YES',
+            'LIMESDR_SOURCE': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
             'PORTAUDIO_SINK': 'YES',
         }
