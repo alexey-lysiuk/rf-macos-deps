@@ -30,6 +30,7 @@ def targets():
         AirspyTarget(),
         AirspyHFTarget(),
         BladeRFTarget(),
+        Codec2Target(),
         CorrectTarget(),
         FftwTarget(),
         FobosTarget(),
