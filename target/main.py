@@ -162,6 +162,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'BLADERF_SOURCE': 'YES',
             'FOBOSSDR_SOURCE': 'YES',
             'LIMESDR_SOURCE': 'YES',
+            'M17_DECODER': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
             'PORTAUDIO_SINK': 'YES',
         }
