@@ -40,6 +40,24 @@ class Ad9361Target(base.CMakeSharedDependencyTarget):
         super().configure(state)
 
 
+class CorrectTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='correct'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/quiet/libcorrect/archive/f5a28c74fba7a99736fe49d3a5243eca29517ae9.tar.gz',
+            '5a4305aabe6c7d5b58f6677c41c54ad5e8d9003f7a5998f7344d93534e4c5760')
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        os.unlink(state.install_path / 'lib/libcorrect.dylib')
+
+        self.write_pc_file(state, filename='libcorrect.pc',
+            description='C library for Convolutional codes and Reed-Solomon', version='0.0.0', libs='-lcorrect')
+
+
 class FftwTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='fftw'):
         super().__init__(name)
