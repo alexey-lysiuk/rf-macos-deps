@@ -1,6 +1,6 @@
 prefix=
 libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+includedir=${prefix}/include/codec2
 
 Name: codec2
 Description: A speech codec for 2400 bit/s and below
