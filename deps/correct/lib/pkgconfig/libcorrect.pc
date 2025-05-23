@@ -1,0 +1,13 @@
+prefix=
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: correct
+Description: C library for Convolutional codes and Reed-Solomon
+Version: 0.0.0
+Requires: 
+Requires.private: 
+Libs: -L${libdir} -lcorrect
+Libs.private: 
+Cflags: -I${includedir} 
