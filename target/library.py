@@ -239,6 +239,37 @@ class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
         return state.has_source_file('libusb/libusb.h')
 
 
+class VolkTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='volk'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/gnuradio/volk/releases/download/v3.2.0/volk-3.2.0.tar.gz',
+            '9c6c11ec8e08aa37ce8ef7c5bcbdee60bac2428faeffb07d072e572ed05eb8cd',
+            patches='volk-no-abspaths')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['ENABLE_MODTOOL'] = 'NO'
+        opts['ENABLE_TESTING'] = 'NO'
+
+        super().configure(state)
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        # Patch CMake module to replace absolute path
+        soname_prefix = '  IMPORTED_SONAME_RELEASE '
+        soname_path = soname_prefix + '"${CMAKE_CURRENT_LIST_DIR}/../../libvolk.3.2.dylib"\n'
+
+        def update_path(line: str):
+            return soname_path if line.startswith(soname_prefix) else line
+
+        cmake_module = state.install_path / 'lib/cmake/volk/VolkTargets-release.cmake'
+        self.update_text_file(cmake_module, update_path)
+
+
 class ZstdTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='zstd'):
         super().__init__(name)

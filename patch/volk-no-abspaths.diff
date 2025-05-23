@@ -1,0 +1,18 @@
+--- a/lib/constants.c.in
++++ b/lib/constants.c.in
+@@ -31,13 +31,13 @@
+ const char*
+ volk_c_compiler()
+ {
+-  return "@cmake_c_compiler_version@";
++  return "clang";
+ }
+ 
+ const char*
+ volk_compiler_flags()
+ {
+-  return "@COMPILER_INFO@";
++  return "";
+ }
+ 
+ const char*
