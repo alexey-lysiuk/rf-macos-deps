@@ -46,6 +46,7 @@ def targets():
         RfnmAudioTarget(),
         RtAudioTarget(),
         RtlSdrTarget(),
+        SDRplayTarget(),
         SpdLogTarget(),
         UsbTarget(),
         VolkTarget(),

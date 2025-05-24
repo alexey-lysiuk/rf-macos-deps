@@ -442,6 +442,32 @@ class RtlSdrTarget(base.CMakeDependencyTarget):
         self.update_text_file(cmake_module, update_dirs)
 
 
+class SDRplayTarget(base.Target):
+    VERSION = '3.15.1'
+
+    def __init__(self, name='sdrplay'):
+        super().__init__(name)
+
+    def build(self, state: BuildState):
+        state.download_source(
+            f'https://www.sdrplay.com/software/SDRplayAPI-macos-installer-universal-{self.VERSION}.pkg',
+            '5d148ceda1fae775d2d2df5b3fcf46dee27b6222e2535c4c063c2f2ea2f7acc3')
+
+        # Extract package payload
+        pkg_suffix = '.pkgSDRplayAPI.pkg'
+        pkg_dir1 = 'SDRplayAPI' + pkg_suffix
+        pkg_dir2 = 'PayloadSDRplayAPI' + pkg_suffix
+        payload_path = f'{pkg_dir1}/{pkg_dir2}/{pkg_dir2}/Payload'
+        args = ('tar', '-xf', payload_path)
+        subprocess.run(args, check=True, cwd=state.source, env=state.environment)
+
+        # Copy headers and library to deps directory
+        common_path = state.source / f'Library/SDRplayAPI/{self.VERSION}'
+
+        for subdir in ('include', 'lib'):
+            shutil.copytree(common_path / subdir, state.install_path / subdir)
+
+
 class SpdLogTarget(base.CMakeStaticDependencyTarget):
     def __init__(self, name='spdlog'):
         super().__init__(name)
