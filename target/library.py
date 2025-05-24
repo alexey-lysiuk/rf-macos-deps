@@ -393,8 +393,8 @@ class RfnmAudioTarget(base.CMakeDependencyTarget):
 
     def prepare_source(self, state: BuildState):
         state.download_source(
-            'https://github.com/rfnm/librfnm/archive/df85a47569370a3de7987b7c36d77e843ec7a41f.tar.gz',
-            'f1bea90a6b8f66393947af5febc6cac814e87795f3fd05514e5d7928df849b86')
+            'https://github.com/AlexandreRouma/librfnm/archive/4e804ec4e77b7f5f1082bafb203f5ad97d65f85a.tar.gz',
+            '4067de2a96acf1710a7ce4b991bf976ac42627a545150ab6330b112a7fc8147b')
 
 
 class RtAudioTarget(base.CMakeSharedDependencyTarget):
