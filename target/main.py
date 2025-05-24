@@ -45,6 +45,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         'LimeSuite.23.11-1',
         'perseus-sdr.0',
         'portaudio',
+        'rfnm',
         'rtaudio.7',
         'rtlsdr.0',
         'usb-1.0.0',
@@ -167,6 +168,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'NEW_PORTAUDIO_SINK': 'YES',
             'PERSEUS_SOURCE': 'YES',
             'PORTAUDIO_SINK': 'YES',
+            'RFNM_SOURCE': 'YES',
         }
 
         for name, value in build_options.items():
