@@ -387,6 +387,16 @@ class PortAudioTarget(base.CMakeDependencyTarget):
         super().configure(state)
 
 
+class RfnmAudioTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='rfnm'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/rfnm/librfnm/archive/df85a47569370a3de7987b7c36d77e843ec7a41f.tar.gz',
+            'f1bea90a6b8f66393947af5febc6cac814e87795f3fd05514e5d7928df849b86')
+
+
 class RtAudioTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='rtaudio'):
         super().__init__(name)

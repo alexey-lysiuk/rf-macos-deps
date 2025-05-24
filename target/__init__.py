@@ -43,6 +43,7 @@ def targets():
         MarkupSafeTarget(),
         PerseusTarget(),
         PortAudioTarget(),
+        RfnmAudioTarget(),
         RtAudioTarget(),
         RtlSdrTarget(),
         SpdLogTarget(),
