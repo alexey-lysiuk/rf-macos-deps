@@ -1,0 +1,10 @@
+prefix=
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: LibRFNM
+Description: Hardware Driver for the RFNM SDR
+Version: 0.2.0
+Cflags: -I${includedir}/
+Libs: -L${libdir} -lrfnm

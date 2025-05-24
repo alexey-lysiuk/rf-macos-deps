@@ -2,4 +2,5 @@
 /**/*.la
 
 /perseus/bin/perseustest
+/rfnm/lib/librfnm.a
 /volk/bin/
