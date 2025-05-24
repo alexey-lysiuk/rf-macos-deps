@@ -169,6 +169,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'PERSEUS_SOURCE': 'YES',
             'PORTAUDIO_SINK': 'YES',
             'RFNM_SOURCE': 'YES',
+            'SDRPLAY_SOURCE': 'YES',
         }
 
         for name, value in build_options.items():
