@@ -214,6 +214,20 @@ class MarkupSafeTarget(base.BuildTarget):
             shutil.copy(state.source / 'src' / self.name / filename, dest_path)
 
 
+class PortAudioTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='portaudio'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz',
+            '47efbf42c77c19a05d22e627d42873e991ec0c1357219c0d74ce6a2948cb2def')
+
+    def configure(self, state: BuildState):
+        state.options['PA_BUILD_STATIC'] = 'NO'
+        super().configure(state)
+
+
 class RtlSdrTarget(base.CMakeDependencyTarget):
     def __init__(self, name='rtlsdr'):
         super().__init__(name)
