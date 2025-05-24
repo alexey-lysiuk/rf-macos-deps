@@ -43,6 +43,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         'hackrf.0',
         'iio.0',
         'LimeSuite.23.11-1',
+        'perseus-sdr.0',
         'portaudio',
         'rtaudio.7',
         'rtlsdr.0',
@@ -164,6 +165,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             'LIMESDR_SOURCE': 'YES',
             'M17_DECODER': 'YES',
             'NEW_PORTAUDIO_SINK': 'YES',
+            'PERSEUS_SOURCE': 'YES',
             'PORTAUDIO_SINK': 'YES',
         }
 
