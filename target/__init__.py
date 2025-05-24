@@ -34,6 +34,7 @@ def targets():
         MakoTarget(),
         MarkupSafeTarget(),
         PortAudioTarget(),
+        RtAudioTarget(),
         RtlSdrTarget(),
         UsbTarget(),
         VolkTarget(),

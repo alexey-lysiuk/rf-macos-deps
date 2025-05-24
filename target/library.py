@@ -228,6 +228,20 @@ class PortAudioTarget(base.CMakeDependencyTarget):
         super().configure(state)
 
 
+class RtAudioTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='rtaudio'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-6.0.1.tar.gz',
+            '42d29cc2b5fa378ba3a978faeb1885a0075acf0fecb5ee50f0d76f6c7d8ab28c')
+
+    def configure(self, state: BuildState):
+        state.options['RTAUDIO_BUILD_TESTING'] = 'NO'
+        super().configure(state)
+
+
 class RtlSdrTarget(base.CMakeDependencyTarget):
     def __init__(self, name='rtlsdr'):
         super().__init__(name)
