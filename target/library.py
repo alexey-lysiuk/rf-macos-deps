@@ -368,6 +368,13 @@ class PerseusTarget(base.ConfigureMakeSharedDependencyTarget):
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('perseus-sdr.h')
 
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        test_exe = state.install_path / 'bin/perseustest'
+        os.unlink(test_exe)
+        os.rename(state.install_path / 'bin/perseustest_dyn', test_exe)
+
     @staticmethod
     def _process_pkg_config(pcfile: Path, line: str) -> str:
         return line.replace('/usr/include', '${includedir}')
