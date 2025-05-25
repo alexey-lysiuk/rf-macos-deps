@@ -470,8 +470,7 @@ class SDRplayTarget(base.Target):
         # Make .dylib symbolic link
         lib_path = state.install_path / 'lib'
         so_path = tuple(lib_path.glob('libsdrplay_api.so.*'))[0]
-        dylib_path = lib_path / 'libsdrplay_api.dylib'
-        dylib_path.symlink_to(so_path)
+        os.symlink(so_path.name, lib_path / 'libsdrplay_api.dylib')
 
 
 class SpdLogTarget(base.CMakeStaticDependencyTarget):
