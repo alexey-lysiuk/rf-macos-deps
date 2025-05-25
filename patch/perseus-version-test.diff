@@ -1,0 +1,10 @@
+--- a/examples/Makefile.in
++++ b/examples/Makefile.in
+@@ -310,6 +310,7 @@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ ACLOCAL_AMFLAGS = -I build-aux
++AM_CFLAGS = -Wall -O3 -DGIT_REVISION=\"@VERSION@\" -I$(top_srcdir)/
+ 
+ # flags you want to pass to the C compiler & linker
+ @OS_LINUX_TRUE@AM_CFLAGS = -Wall -O3 @SIMD_FLAGS@ -DGIT_REVISION=\"@VERSION@\" -I$(top_srcdir)/

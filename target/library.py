@@ -363,7 +363,7 @@ class PerseusTarget(base.ConfigureMakeSharedDependencyTarget):
         state.download_source(
             'https://github.com/Microtelecom/libperseus-sdr/releases/download/v0.8.2/libperseus_sdr-0.8.2.tar.gz',
             '07e4b106374cf0d946f1df17a94eccbef7533d6320e528d9c7b60ac8d39e0d38',
-            patches='perseus-fix-build')
+            patches=('perseus-fix-build', 'perseus-version-test'))
 
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('perseus-sdr.h')
