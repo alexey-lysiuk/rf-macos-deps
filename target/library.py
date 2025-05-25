@@ -467,6 +467,12 @@ class SDRplayTarget(base.Target):
         for subdir in ('include', 'lib'):
             shutil.copytree(common_path / subdir, state.install_path / subdir)
 
+        # Make .dylib symbolic link
+        lib_path = state.install_path / 'lib'
+        so_path = tuple(lib_path.glob('libsdrplay_api.so.*'))[0]
+        dylib_path = lib_path / 'libsdrplay_api.dylib'
+        dylib_path.symlink_to(so_path)
+
 
 class SpdLogTarget(base.CMakeStaticDependencyTarget):
     def __init__(self, name='spdlog'):
