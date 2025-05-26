@@ -32,6 +32,7 @@ from aedi.utility import (
 
 
 class SdrPlusPlusTarget(CMakeMainTarget):
+    BUNDLE_NAME = 'SDR++.app'
     DEPENDENCIES = (
         'ad9361.0',
         'airspy.0',
@@ -64,7 +65,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             self.build_path = state.build_path
             self.src_res_path = state.source / 'root/res'
 
-            self.bundle_path = state.install_path / 'SDR++.app'
+            self.bundle_path = state.install_path / SdrPlusPlusTarget.BUNDLE_NAME
             self.contents_path = self.bundle_path / 'Contents'
             self.plist_path = self.contents_path / 'Info.plist'
             self.macos_path = self.contents_path / 'MacOS'
@@ -151,6 +152,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
     def __init__(self, name='sdrpp'):
         super().__init__(name)
+        self.outputs = (self.BUNDLE_NAME,)
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
