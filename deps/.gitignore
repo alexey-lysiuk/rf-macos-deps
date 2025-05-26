@@ -1,5 +1,7 @@
 /*/share
 /**/*.la
 
+/mako/
+/markupsafe/
 /rfnm/lib/librfnm.a
 /volk/bin/
