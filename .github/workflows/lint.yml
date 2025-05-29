@@ -1,29 +1,27 @@
 ---
 name: Lint Code
 
-on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
-  pull_request:
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
+on: [push, pull_request]
 
 jobs:
   lint:
     if: "!contains(github.event.head_commit.message, '[skip lint]')"
     runs-on: ubuntu-22.04
+    permissions:
+      statuses: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Super-Linter
         uses: super-linter/super-linter/slim@v5
         env:
-          FILTER_REGEX_INCLUDE: .*(\.py|\.md|\.yml)$
-          FILTER_REGEX_EXCLUDE: .*/deps/.*
+          FILTER_REGEX_EXCLUDE: /deps/|/patch/|/test/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USE_FIND_ALGORITHM: true
           VALIDATE_NATURAL_LANGUAGE: false
           VALIDATE_PYTHON_BLACK: false
 
