@@ -34,12 +34,6 @@ on:
       verbose:
         description: 'Verbose build output'
         type: boolean
-      hack-static-moltenvk:
-        description: 'Link with static MoltenVK library'
-        type: boolean
-      hack-quasi-glib:
-        description: 'Link with QuasiGlib library'
-        type: boolean
 
 jobs:
   build:
@@ -68,14 +62,6 @@ jobs:
           	BUILD_CMDLINE+=" --os-version-arm=${{ inputs.min-os-ver-arm }}"
           fi
 
-          if [ "${{ inputs.hack-static-moltenvk }}" == 'true' ]; then
-          	BUILD_CMDLINE+=' --static-moltenvk'
-          fi
-
-          if [ "${{ inputs.hack-quasi-glib }}" == 'true' ]; then
-          	BUILD_CMDLINE+=' --quasi-glib'
-          fi
-          
           if [ "${{ inputs.verbose }}" == 'true' ]; then
           	BUILD_CMDLINE+=' --verbose'
           fi
