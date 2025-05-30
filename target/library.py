@@ -40,6 +40,21 @@ class Ad9361Target(base.CMakeSharedDependencyTarget):
         super().configure(state)
 
 
+class Codec2Target(base.CMakeStaticDependencyTarget):
+    def __init__(self, name='codec2'):
+        super().__init__(name)
+        self.multi_platform = False
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/drowe67/codec2/archive/refs/tags/1.2.0.tar.gz',
+            'cbccae52b2c2ecc5d2757e407da567eb681241ff8dadce39d779a7219dbcf449')
+
+    def configure(self, state: BuildState):
+        state.options['BUILD_OSX_UNIVERSAL'] = 'YES'
+        super().configure(state)
+
+
 class CorrectTarget(base.CMakeDependencyTarget):
     def __init__(self, name='correct'):
         super().__init__(name)
