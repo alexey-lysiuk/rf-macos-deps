@@ -158,7 +158,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
 
     def configure(self, state: BuildState):
-        apply_unified_diff(state.patch_path / 'sdrpp-no-frameworks.diff', state.source)
+        apply_unified_diff(state.patch_path / 'sdrpp-local-ad9361-iio.diff', state.source)
 
         opts = state.options
         build_options = {
