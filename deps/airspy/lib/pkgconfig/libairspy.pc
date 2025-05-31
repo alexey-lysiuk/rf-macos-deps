@@ -1,0 +1,11 @@
+prefix=
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: AirSpy Library
+Description: C Utility Library
+Version: 1.0
+Cflags: -I${includedir}/libairspy/ -I${includedir}/libusb-1.0
+Libs: -L${libdir} -lairspy
+Libs.private: 
