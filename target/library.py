@@ -132,7 +132,9 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
         state.download_source(
             'https://github.com/rigexpert/libfobos/archive/f202101d5cfd40c1fe177513e256d49950c7dd9a.tar.gz',
             'f5d81fcc12460cbe86fbc0e7a3691b5eb6455141f4d4b588659c6ab69b3cfb6c',
-            patches=('fobos-fix-cmake', 'fobos-fix-determinism', 'fobos-fix-open'))
+            patches=('fobos-fix-cmake', 'fobos-fix-open'))
+        # Use commit datetime to have a deterministic build, see fobos_rx_get_api_info() function
+        state.set_build_datetime(2025, 1, 20, 10, 6, 1)
 
     def post_build(self, state: BuildState):
         super().post_build(state)
