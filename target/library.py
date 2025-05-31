@@ -18,6 +18,7 @@
 
 import os
 import shutil
+import subprocess
 
 import aedi.target.base as base
 from aedi.state import BuildState
@@ -58,6 +59,58 @@ class AirspyHFTarget(base.CMakeDependencyTarget):
         state.download_source(
             'https://github.com/airspy/airspyhf/archive/refs/tags/1.6.8.tar.gz',
             'cd1e5ae89e09b813b096ae4a328e352c9432a582e03fd7da86760ba60efa77ab')
+
+
+class BladeRFTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='bladerf'):
+        super().__init__(name)
+        self.src_root = 'host'
+
+    def prepare_source(self, state: BuildState):
+        # Downloaded source code fails to compile because of missing Git submodules
+        # state.download_source(
+        #     'https://github.com/Nuand/bladeRF/archive/refs/tags/2023.02.tar.gz',
+        #     '3bbac54ad7d6e35be31eb12393be5e7102a070fb1ddc176992d64a6a623670c7')
+
+        if not state.source.exists():
+            clone_args = ('git', 'clone', 'https://github.com/Nuand/bladeRF.git', state.source)
+            subprocess.run(clone_args, check=True, env=state.environment)
+
+        checkout_args = (
+            ('checkout', '2023.02'),
+            ('submodule', 'update', '--init', '--recursive')
+        )
+
+        for args in checkout_args:
+            subprocess.run(('git', *args), check=True, cwd=state.source, env=state.environment)
+
+        # Verify commit hash of checked out release tag
+        head_args = ('git', 'rev-parse', 'HEAD')
+        head_run = subprocess.run(head_args, check=True, cwd=state.source,
+                                  env=state.environment, stdout=subprocess.PIPE)
+        head_output = head_run.stdout.decode('ascii').strip()
+
+        if head_output != '41ef63460956e833c9b321252245257ab3946055':
+            raise RuntimeError('BladeRF commit does not match with the release tag')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+
+        # Disable libusb check as it fails to run due to lack of @rpath in test executable
+        # Set the corresponding preprocessor macro explicitly
+        opts['CMAKE_C_FLAGS'] += '-DHAVE_LIBUSB_GET_VERSION'
+        opts['LIBUSB_SKIP_VERSION_CHECK'] = 'YES'
+
+        # Set search prefix to avoid absolute paths to intermediate directories
+        opts['LIBBLADERF_SEARCH_PREFIX_OVERRIDE'] = '/usr/local'
+
+        # Do not fail build as compilation generates some warnings
+        opts['TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+
+        # Mark as tagged/release build
+        opts['VERSION_INFO_EXTRA'] = ''
+
+        super().configure(state)
 
 
 class Codec2Target(base.CMakeStaticDependencyTarget):

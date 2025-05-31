@@ -27,6 +27,7 @@ def targets():
         Ad9361Target(),
         AirspyTarget(),
         AirspyHFTarget(),
+        BladeRFTarget(),
         Codec2Target(),
         CorrectTarget(),
         FftwTarget(),
