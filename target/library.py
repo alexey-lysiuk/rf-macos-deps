@@ -40,6 +40,16 @@ class Ad9361Target(base.CMakeSharedDependencyTarget):
         super().configure(state)
 
 
+class AirspyTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='airspy'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/airspy/airspyone_host/archive/refs/tags/v1.0.10.tar.gz',
+            'fcca23911c9a9da71cebeffeba708c59d1d6401eec6eb2dd73cae35b8ea3c613')
+
+
 class Codec2Target(base.CMakeStaticDependencyTarget):
     def __init__(self, name='codec2'):
         super().__init__(name)
