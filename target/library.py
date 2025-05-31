@@ -50,6 +50,16 @@ class AirspyTarget(base.CMakeDependencyTarget):
             'fcca23911c9a9da71cebeffeba708c59d1d6401eec6eb2dd73cae35b8ea3c613')
 
 
+class AirspyHFTarget(base.CMakeDependencyTarget):
+    def __init__(self, name='airspyhf'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/airspy/airspyhf/archive/refs/tags/1.6.8.tar.gz',
+            'cd1e5ae89e09b813b096ae4a328e352c9432a582e03fd7da86760ba60efa77ab')
+
+
 class Codec2Target(base.CMakeStaticDependencyTarget):
     def __init__(self, name='codec2'):
         super().__init__(name)

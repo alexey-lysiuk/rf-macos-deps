@@ -26,6 +26,7 @@ def targets():
         # Libraries
         Ad9361Target(),
         AirspyTarget(),
+        AirspyHFTarget(),
         Codec2Target(),
         CorrectTarget(),
         FftwTarget(),
