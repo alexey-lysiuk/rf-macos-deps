@@ -398,6 +398,7 @@ class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
 class VolkTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='volk'):
         super().__init__(name)
+        self.prerequisites = ('mako', 'markupsafe')
 
     def prepare_source(self, state: BuildState):
         state.download_source(
