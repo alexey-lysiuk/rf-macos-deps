@@ -2,4 +2,5 @@
 /**/*.la
 
 /mako/
+/markupsafe/
 /volk/bin/
