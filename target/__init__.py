@@ -35,6 +35,7 @@ def targets():
         GlfwTarget(),
         HackRFTarget(),
         IioTarget(),
+        LimeSuiteTarget(),
         MakoTarget(),
         MarkupSafeTarget(),
         PortAudioTarget(),
