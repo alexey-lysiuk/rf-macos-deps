@@ -388,8 +388,8 @@ class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
 
     def prepare_source(self, state: BuildState):
         state.download_source(
-            'https://github.com/libusb/libusb/releases/download/v1.0.28/libusb-1.0.28.tar.bz2',
-            '966bb0d231f94a474eaae2e67da5ec844d3527a1f386456394ff432580634b29')
+            'https://github.com/libusb/libusb/releases/download/v1.0.29/libusb-1.0.29.tar.bz2',
+            '5977fc950f8d1395ccea9bd48c06b3f808fd3c2c961b44b0c2e6e29fc3a70a85')
 
     def detect(self, state: BuildState) -> bool:
         return state.has_source_file('libusb/libusb.h')
