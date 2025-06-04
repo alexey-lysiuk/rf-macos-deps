@@ -1,0 +1,21 @@
+--- a/configure
++++ b/configure
+@@ -13673,7 +13673,6 @@
+ esac
+ 
+ 
+-$as_echo "#define malloc rpl_malloc" >>confdefs.h
+ 
+ fi
+ 
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -435,7 +435,7 @@
+ 
+ # flags you want to pass to the C compiler & linker
+ @OS_LINUX_TRUE@AM_CFLAGS = -Wall -O3 @SIMD_FLAGS@ -DGIT_REVISION=\"@VERSION@\"
+-@OS_MACOS_TRUE@AM_CFLAGS = -Wall -O3 -mssse3 -DGIT_REVISION=\"@VERSION@\"
++@OS_MACOS_TRUE@AM_CFLAGS = -Wall -O3 -DGIT_REVISION=\"@VERSION@\"
+ 
+ #
+ # flags you want to pass to the C compiler & linker

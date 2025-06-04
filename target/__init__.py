@@ -38,6 +38,7 @@ def targets():
         LimeSuiteTarget(),
         MakoTarget(),
         MarkupSafeTarget(),
+        PerseusTarget(),
         PortAudioTarget(),
         RtAudioTarget(),
         RtlSdrTarget(),

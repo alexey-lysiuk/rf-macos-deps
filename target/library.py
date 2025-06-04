@@ -19,6 +19,7 @@
 import os
 import shutil
 import subprocess
+from pathlib import Path
 
 import aedi.target.base as base
 from aedi.state import BuildState
@@ -321,6 +322,31 @@ class MarkupSafeTarget(base.BuildTarget):
 
         for filename in ('__init__.py', '_native.py'):
             shutil.copy(state.source / 'src' / self.name / filename, dest_path)
+
+
+class PerseusTarget(base.ConfigureMakeSharedDependencyTarget):
+    def __init__(self, name='perseus'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/Microtelecom/libperseus-sdr/releases/download/v0.8.2/libperseus_sdr-0.8.2.tar.gz',
+            '07e4b106374cf0d946f1df17a94eccbef7533d6320e528d9c7b60ac8d39e0d38',
+            patches=('perseus-fix-build', 'perseus-version-test'))
+
+    def detect(self, state: BuildState) -> bool:
+        return state.has_source_file('perseus-sdr.h')
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        test_exe = state.install_path / 'bin/perseustest'
+        os.unlink(test_exe)
+        os.rename(state.install_path / 'bin/perseustest_dyn', test_exe)
+
+    @staticmethod
+    def _process_pkg_config(pcfile: Path, line: str) -> str:
+        return line.replace('/usr/include', '${includedir}')
 
 
 class PortAudioTarget(base.CMakeDependencyTarget):
