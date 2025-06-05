@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -130,7 +130,7 @@
+ # On Unix pass the SYSCONFDIR through to conf file loader
+ if(NOT WIN32)
+     include(GNUInstallDirs)
+-    add_definitions(-DINSTALL_SYSCONFDIR=${CMAKE_INSTALL_FULL_SYSCONFDIR})
++    add_definitions(-DINSTALL_SYSCONFDIR=/usr/local/etc)
+ endif()
+ 
+ ########################################################################

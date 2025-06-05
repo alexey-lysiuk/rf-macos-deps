@@ -1,0 +1,10 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -26,7 +26,6 @@
+ # Get version info from Git
+ ########################################################################
+ include(GetGitRevisionDescription)
+-get_git_head_revision(GIT_REFSPEC GIT_COMMIT)
+ if(GIT_COMMIT) # is a git repo
+     # shorten branch spec
+     string(REGEX REPLACE ".*/" "" GIT_BRANCH "${GIT_REFSPEC}")
