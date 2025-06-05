@@ -1,0 +1,11 @@
+--- a/source_modules/plutosdr_source/CMakeLists.txt
++++ b/source_modules/plutosdr_source/CMakeLists.txt
+@@ -23,7 +23,7 @@ elseif (ANDROID)
+         /sdr-kit/${ANDROID_ABI}/lib/libad9361.so
+     )
+ else (MSVC)
+-    if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
++    if (0)
+         target_include_directories(plutosdr_source PRIVATE "/Library/Frameworks/iio.framework/Headers")
+         target_link_libraries(plutosdr_source PRIVATE "/Library/Frameworks/iio.framework/iio")
+ 

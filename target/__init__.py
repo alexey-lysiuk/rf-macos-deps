@@ -23,6 +23,8 @@ from .tool import *
 
 def targets():
     return (
+        SdrPlusPlusTarget(),
+
         # Libraries
         Ad9361Target(),
         AirspyTarget(),
