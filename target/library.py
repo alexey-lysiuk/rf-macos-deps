@@ -439,6 +439,23 @@ class SDRplayTarget(base.Target):
         os.symlink(so_path.name, lib_path / 'libsdrplay_api.dylib')
 
 
+class SpdLogTarget(base.CMakeStaticDependencyTarget):
+    def __init__(self, name='spdlog'):
+        super().__init__(name)
+
+    def prepare_source(self, state: BuildState):
+        state.download_source(
+            'https://github.com/gabime/spdlog/archive/refs/tags/v1.15.3.tar.gz',
+            '15a04e69c222eb6c01094b5c7ff8a249b36bb22788d72519646fb85feb267e67')
+
+    def configure(self, state: BuildState):
+        opts = state.options
+        opts['SPDLOG_BUILD_EXAMPLE'] = 'NO'
+        opts['SPDLOG_BUILD_PIC'] = 'YES'
+
+        super().configure(state)
+
+
 class UsbTarget(base.ConfigureMakeSharedDependencyTarget):
     def __init__(self, name='usb'):
         super().__init__(name)
