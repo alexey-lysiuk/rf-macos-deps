@@ -219,6 +219,30 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
             self.copy_to_bin(state, binary)
 
 
+class FobosAgileTarget(base.CMakeSharedDependencyTarget):
+    def __init__(self, name='fobos-agile'):
+        super().__init__(name)
+        self.project_name = 'fobos_sdr'
+
+    def prepare_source(self, state: BuildState):
+        patches = ['fobos-agile-fix-' + suffix for suffix in ('cmake', 'open', 'pc', 'tools')]
+        state.download_source(
+            'https://github.com/rigexpert/libfobos-sdr-agile/archive/refs/tags/v.3.0.2.tar.gz',
+            'fa41189cc23b718f73386d05f9b0809127cd21abafc74dd60af600c79e08247a',
+            patches)
+        # Use commit datetime to have a deterministic build, see fobos_sdr_get_api_info() function
+        state.set_build_datetime(2025, 3, 11, 18, 59, 38)
+
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        if state.xcode:
+            self.hardcopy_xcode_deps(state, 'usb')
+        else:
+            for suffix in ('devinfo', 'fwloader', 'recorder', 'scanner'):
+                self.copy_to_bin(state, 'fobos_sdr_' + suffix)
+
+
 class GlfwTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='glfw'):
         super().__init__(name)

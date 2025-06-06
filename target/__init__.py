@@ -34,6 +34,7 @@ def targets():
         CorrectTarget(),
         FftwTarget(),
         FobosTarget(),
+        FobosAgileTarget(),
         GlfwTarget(),
         HackRFTarget(),
         IioTarget(),
