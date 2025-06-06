@@ -2,6 +2,10 @@
 
 This repository contains binary dependencies required to build various radio frequency tools on macOS.
 
+[![Build Targets](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/build.yml/badge.svg)](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/build.yml)
+[![Lint Code](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/lint.yml/badge.svg)](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/lint.yml)
+[![Test Libraries](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/test.yml/badge.svg)](https://github.com/aedi-org/rfreq-macos-deps/actions/workflows/test.yml)
+
 ## Usage
 
 Download source code, and build a target
