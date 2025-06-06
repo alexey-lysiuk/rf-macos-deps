@@ -215,8 +215,11 @@ class FobosTarget(base.CMakeSharedDependencyTarget):
     def post_build(self, state: BuildState):
         super().post_build(state)
 
-        for binary in ('fobos_devinfo', 'fobos_fwloader', 'fobos_recorder'):
-            self.copy_to_bin(state, binary)
+        if state.xcode:
+            self.hardcopy_xcode_deps(state, 'usb')
+        else:
+            for suffix in ('devinfo', 'fwloader', 'recorder'):
+                self.copy_to_bin(state, 'fobos_' + suffix)
 
 
 class FobosAgileTarget(base.CMakeSharedDependencyTarget):
