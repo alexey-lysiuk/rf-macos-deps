@@ -44,7 +44,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
             self.build_path = state.build_path
             self.src_res_path = state.source / 'root/res'
 
-            self.bundle_path = state.install_path / target.bundle_name
+            self.bundle_path = state.install_path / target.outputs[0]
             self.contents_path = self.bundle_path / 'Contents'
             self.plist_path = self.contents_path / 'Info.plist'
             self.macos_path = self.contents_path / 'MacOS'
@@ -88,7 +88,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
                 'CFBundleIconFile': self.icon,
                 'CFBundleIdentifier': 'org.sdrpp.sdrpp',
                 'CFBundleInfoDictionaryVersion': '6.0',
-                'CFBundleName': 'SDR++',
+                'CFBundleName': self.target.bundle_name,
                 'CFBundlePackageType': 'APPL',
                 'CFBundleShortVersionString': version,
                 'CFBundleVersion': version,
@@ -180,7 +180,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
         if state.xcode:
             self._prepare_xcode(state)
         else:
-            self.outputs = (self.bundle_name,)
+            self.outputs = (self.bundle_name / '.app',)
             self.BundleWriter(self, state)
 
     def _prepare_xcode(self, state: BuildState):
@@ -214,7 +214,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
 class SdrPlusPlusTarget(SdrPlusPlusBaseTarget):
     def __init__(self):
         super().__init__('sdrpp')
-        self.bundle_name = 'SDR++.app'
+        self.bundle_name = 'SDR++'
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
@@ -227,7 +227,7 @@ class SdrPlusPlusTarget(SdrPlusPlusBaseTarget):
 class MinusMinusSdrTarget(SdrPlusPlusBaseTarget):
     def __init__(self):
         super().__init__('mmsdr')
-        self.bundle_name = 'SDR++.app'  # TODO: mmSDR.app
+        self.bundle_name = 'mmSDR'
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/alexey-lysiuk/mmSDR.git')
