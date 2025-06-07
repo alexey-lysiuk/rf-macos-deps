@@ -23,6 +23,7 @@ from .tool import *
 
 def targets():
     return (
+        MinusMinusSdrTarget(),
         SdrPlusPlusTarget(),
 
         # Libraries

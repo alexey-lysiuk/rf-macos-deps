@@ -224,7 +224,7 @@ class SdrPlusPlusTarget(SdrPlusPlusBaseTarget):
         super().configure(state)
 
 
-class MMSdrTarget(SdrPlusPlusBaseTarget):
+class MinusMinusSdrTarget(SdrPlusPlusBaseTarget):
     def __init__(self):
         super().__init__('mmsdr')
         self.bundle_name = 'SDR++.app'  # TODO: mmSDR.app
