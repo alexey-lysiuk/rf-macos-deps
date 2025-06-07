@@ -27,13 +27,13 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Build target
-        run: |
-          ./build.py --target ${{ matrix.target }}
-
       - name: Generate Xcode project
         run: |
           ./build.py --target ${{ matrix.target }} --xcode
+
+      - name: Build target
+        run: |
+          ./build.py --target ${{ matrix.target }}
 
       - name: List Build Directory
         if: always()
