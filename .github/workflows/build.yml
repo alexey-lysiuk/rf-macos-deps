@@ -21,6 +21,7 @@ jobs:
       matrix:
         target:
           - sdrpp
+          - mmsdr
 
     steps:
       - uses: actions/checkout@v4
