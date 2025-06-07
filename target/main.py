@@ -180,7 +180,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
         if state.xcode:
             self._prepare_xcode(state)
         else:
-            self.outputs = (self.bundle_name / '.app',)
+            self.outputs = (self.bundle_name + '.app',)
             self.BundleWriter(self, state)
 
     def _prepare_xcode(self, state: BuildState):
