@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         target:
-          - sdrpp
+#          - sdrpp
           - mmsdr
 
     steps:
@@ -30,6 +30,13 @@ jobs:
 
       - name: Generate Xcode project
         run: |
+          # temp hack start
+          mkdir source
+          cd source
+          git clone https://github.com/alexey-lysiuk/mmSDR.git mmsdr
+          git -C mmsdr switch wip
+          cd ..
+          # temp hack end
           ./build.py --target ${{ matrix.target }} --xcode
 
       - name: Build target
