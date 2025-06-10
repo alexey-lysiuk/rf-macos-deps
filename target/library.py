@@ -295,6 +295,16 @@ class IioTarget(base.CMakeSharedDependencyTarget):
         state.options['OSX_FRAMEWORK'] = 'NO'
         super().configure(state)
 
+    def post_build(self, state: BuildState):
+        super().post_build(state)
+
+        # Needed in order to build ad9361
+        include_subdir = state.install_path / 'include/iio'
+        include_subdir.mkdir()
+
+        header = 'iio.h'
+        os.symlink(Path('..') / header, include_subdir / header)
+
 
 class LimeSuiteTarget(base.CMakeSharedDependencyTarget):
     def __init__(self, name='limesuite'):
