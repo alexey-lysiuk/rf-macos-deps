@@ -24,6 +24,7 @@ from .tool import *
 def targets():
     return (
         SdrPlusPlusTarget(),
+        SrdppExpTarget(),
 
         # Libraries
         Ad9361Target(),

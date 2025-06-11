@@ -31,33 +31,12 @@ from aedi.utility import (
 )
 
 
-class SdrPlusPlusTarget(CMakeMainTarget):
-    BUNDLE_NAME = 'SDR++.app'
-    DEPENDENCIES = (
-        'ad9361.0',
-        'airspy.0',
-        'airspyhf.0',
-        'bladeRF.2',
-        'fftw3f.3.6.9',
-        'fobos',
-        'glfw.3',
-        'hackrf.0',
-        'iio.0',
-        'LimeSuite.23.11-1',
-        'perseus-sdr.0',
-        'portaudio',
-        'rfnm',
-        'rtaudio.7',
-        'rtlsdr.0',
-        'usb-1.0.0',
-        'volk.3.2',
-        'zstd.1'
-    )
-
+class SdrPlusPlusBaseTarget(CMakeMainTarget):
     class BundleWriter:
-        def __init__(self, state: BuildState):
+        def __init__(self, target, state: BuildState):
             assert not state.xcode
 
+            self.target = target
             self.state = state
             self.executable = 'sdrpp'
             self.icon = 'sdrpp.icns'
@@ -65,7 +44,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             self.build_path = state.build_path
             self.src_res_path = state.source / 'root/res'
 
-            self.bundle_path = state.install_path / SdrPlusPlusTarget.BUNDLE_NAME
+            self.bundle_path = state.install_path / target.outputs[0]
             self.contents_path = self.bundle_path / 'Contents'
             self.plist_path = self.contents_path / 'Info.plist'
             self.macos_path = self.contents_path / 'MacOS'
@@ -91,7 +70,7 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             os.mkdir(self.lib_path)
             hardcopy(self.build_path / 'core' / core_lib, self.lib_path / core_lib)
 
-            for dependency in SdrPlusPlusTarget.DEPENDENCIES:
+            for dependency in self.target.dependencies:
                 dylib = f'lib{dependency}.dylib'
                 hardcopy(self.state.lib_path / dylib, self.lib_path / dylib)
 
@@ -150,35 +129,50 @@ class SdrPlusPlusTarget(CMakeMainTarget):
             )
             subprocess.run(args, check=True, env=self.state.environment)
 
-    def __init__(self, name='sdrpp'):
+    def __init__(self, name=None):
         super().__init__(name)
-        self.outputs = (self.BUNDLE_NAME,)
-
-    def prepare_source(self, state: BuildState):
-        state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
+        self.outputs = ('SDR++.app',)
+        self.dependencies = [
+            'ad9361.0',
+            'airspy.0',
+            'airspyhf.0',
+            'bladeRF.2',
+            'fftw3f.3.6.9',
+            'fobos',
+            'glfw.3',
+            'hackrf.0',
+            'iio.0',
+            'LimeSuite.23.11-1',
+            'perseus-sdr.0',
+            'portaudio',
+            'rfnm',
+            'rtaudio.7',
+            'rtlsdr.0',
+            'usb-1.0.0',
+            'volk.3.2',
+            'zstd.1'
+        ]
 
     def configure(self, state: BuildState):
-        apply_unified_diff(state.patch_path / 'sdrpp-local-ad9361-iio.diff', state.source)
-
         opts = state.options
-        build_options = {
-            'AUDIO_SINK': 'NO',
-            'BLADERF_SOURCE': 'YES',
-            'FOBOSSDR_SOURCE': 'YES',
-            'LIMESDR_SOURCE': 'YES',
-            'M17_DECODER': 'YES',
-            'NEW_PORTAUDIO_SINK': 'YES',
-            'PERSEUS_SOURCE': 'YES',
-            'PORTAUDIO_SINK': 'YES',
-            'RFNM_SOURCE': 'YES',
-            'SDRPLAY_SOURCE': 'YES',
-        }
-
-        for name, value in build_options.items():
-            opts['OPT_BUILD_' + name] = value
-
+        opts['OPT_BUILD_AUDIO_SINK'] = 'NO'
         opts['USE_BUNDLE_DEFAULTS'] = 'YES'
         opts['USE_INTERNAL_LIBCORRECT'] = 'NO'
+
+        enabled_options = (
+            'BLADERF_SOURCE',
+            'FOBOSSDR_SOURCE',
+            'LIMESDR_SOURCE',
+            'M17_DECODER',
+            'NEW_PORTAUDIO_SINK',
+            'PERSEUS_SOURCE',
+            'PORTAUDIO_SINK',
+            'RFNM_SOURCE',
+            'SDRPLAY_SOURCE',
+        )
+
+        for option in enabled_options:
+            opts['OPT_BUILD_' + option] = 'YES'
 
         super().configure(state)
 
@@ -186,14 +180,13 @@ class SdrPlusPlusTarget(CMakeMainTarget):
         if state.xcode:
             self._prepare_xcode(state)
         else:
-            self.BundleWriter(state)
+            self.BundleWriter(self, state)
 
-    @staticmethod
-    def _prepare_xcode(state: BuildState):
+    def _prepare_xcode(self, state: BuildState):
         assert state.xcode
 
         # Shared library dependencies
-        CMakeMainTarget.hardcopy_xcode_deps(state, SdrPlusPlusTarget.DEPENDENCIES)
+        CMakeMainTarget.hardcopy_xcode_deps(state, self.dependencies)
 
         # SDR++ modules
         plugins_path = state.build_path / 'Plugins'
@@ -215,3 +208,27 @@ class SdrPlusPlusTarget(CMakeMainTarget):
 
         if not resources_path.exists():
             resources_path.symlink_to(state.source / 'root/res')
+
+
+class SdrPlusPlusTarget(SdrPlusPlusBaseTarget):
+    def __init__(self):
+        super().__init__('sdrpp')
+
+    def prepare_source(self, state: BuildState):
+        state.checkout_git('https://github.com/AlexandreRouma/SDRPlusPlus.git')
+
+    def configure(self, state: BuildState):
+        apply_unified_diff(state.patch_path / 'sdrpp-local-ad9361-iio.diff', state.source)
+        super().configure(state)
+
+
+class SrdppExpTarget(SdrPlusPlusBaseTarget):
+    def __init__(self):
+        super().__init__('sdrpp-exp')
+
+    def prepare_source(self, state: BuildState):
+        state.checkout_git('https://github.com/alexey-lysiuk/sdrpp-exp.git')
+
+    def configure(self, state: BuildState):
+        state.options['OPT_BUILD_DISCORD_PRESENCE'] = 'NO'
+        super().configure(state)
