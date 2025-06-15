@@ -186,7 +186,7 @@ class SdrPlusPlusBaseTarget(CMakeMainTarget):
         assert state.xcode
 
         # Shared library dependencies
-        CMakeMainTarget.hardcopy_xcode_deps(state, self.dependencies)
+        CMakeMainTarget.hardcopy_xcode_deps(state, *self.dependencies)
 
         # SDR++ modules
         plugins_path = state.build_path / 'Plugins'
