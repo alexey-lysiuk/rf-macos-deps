@@ -225,10 +225,12 @@ class SdrPlusPlusTarget(SdrPlusPlusBaseTarget):
 class SrdppExpTarget(SdrPlusPlusBaseTarget):
     def __init__(self):
         super().__init__('sdrpp-exp')
+        self.dependencies.append('libfobos_sdr')
 
     def prepare_source(self, state: BuildState):
         state.checkout_git('https://github.com/alexey-lysiuk/sdrpp-exp.git')
 
     def configure(self, state: BuildState):
         state.options['OPT_BUILD_DISCORD_PRESENCE'] = 'NO'
+        state.options['OPT_BUILD_FOBOSSDR_AGILE_SOURCE'] = 'YES'
         super().configure(state)
